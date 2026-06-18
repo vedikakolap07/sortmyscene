@@ -12,8 +12,9 @@ const { protect } = require('../middleware/auth');
 router.post(
   '/',
   protect,
-  [body('reservationId').notEmpty().withMessage('reservationId is required')],
   async (req, res) => {
+    await body('reservationId').notEmpty().withMessage('reservationId is required').run(req);
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, errors: errors.array() });

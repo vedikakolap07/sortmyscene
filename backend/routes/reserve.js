@@ -11,11 +11,10 @@ const { protect } = require('../middleware/auth');
 router.post(
   '/',
   protect,
-  [
-    body('eventId').notEmpty().withMessage('eventId is required'),
-    body('seatNumbers').isArray({ min: 1 }).withMessage('seatNumbers must be a non-empty array'),
-  ],
   async (req, res) => {
+    await body('eventId').notEmpty().withMessage('eventId is required').run(req);
+    await body('seatNumbers').isArray({ min: 1 }).withMessage('seatNumbers must be a non-empty array').run(req);
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, errors: errors.array() });
