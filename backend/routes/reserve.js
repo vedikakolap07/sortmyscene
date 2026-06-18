@@ -83,4 +83,41 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
+// POST /api/reserve/cancel/:reservationId - Cancel a reservation and release seats
+router.post('/cancel/:reservationId', protect, async (req, res) => {
+  const { reservationId } = req.params;
+  const session = await mongoose.startSession();
+
+  try {
+    await session.withTransaction(async () => {
+      const reservation = await Reservation.findOne(
+        { _id: reservationId, userId: req.user._id, status: 'active' },
+        null,
+        { session }
+      );
+
+      if (!reservation) {
+        throw Object.assign(new Error('Reservation not found'), { statusCode: 404 });
+      }
+
+      // Release the seats back to available
+      await Seat.updateMany(
+        { eventId: reservation.eventId, seatNumber: { $in: reservation.seatNumbers } },
+        { $set: { status: 'available' } },
+        { session }
+      );
+
+      // Mark reservation as expired
+      await Reservation.findByIdAndUpdate(reservationId, { status: 'expired' }, { session });
+    });
+
+    res.json({ success: true, message: 'Reservation cancelled' });
+  } catch (err) {
+    const status = err.statusCode || 500;
+    res.status(status).json({ success: false, message: err.message });
+  } finally {
+    await session.endSession();
+  }
+});
+
 module.exports = router;

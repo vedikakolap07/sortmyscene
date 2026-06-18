@@ -42,6 +42,7 @@ export const eventsAPI = {
 // ── Reserve ───────────────────────────────────────────
 export const reserveAPI = {
   reserve: (data) => api.post('/reserve', data),
+  cancel: (reservationId) => api.post(`/reserve/cancel/${reservationId}`),
 };
 
 // ── Bookings ──────────────────────────────────────────

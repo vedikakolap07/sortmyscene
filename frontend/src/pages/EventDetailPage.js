@@ -109,6 +109,23 @@ export default function EventDetailPage() {
     }
   }, [step, fetchEvent]);
 
+  const handleChangeSeats = async () => {
+    if (!reservation) return;
+    setWorking(true);
+    try {
+      await reserveAPI.cancel(reservation._id);
+      setStep(STEPS.SELECT);
+      setSelectedSeats([]);
+      setReservation(null);
+      fetchEvent().catch(() => {});
+      toast.success('Reservation cancelled. Select new seats.');
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setWorking(false);
+    }
+  };
+
   if (loading) return <div className="page-loading"><div className="spinner" /></div>;
   if (error) return <div className="page-error">{error}</div>;
 
@@ -211,8 +228,8 @@ export default function EventDetailPage() {
             <button className="btn-primary btn-confirm" onClick={handleConfirmBooking} disabled={working}>
               {working ? 'Confirming…' : 'Confirm booking'}
             </button>
-            <button className="btn-ghost" onClick={() => { setStep(STEPS.SELECT); setSelectedSeats([]); setReservation(null); fetchEvent(); }}>
-              Change seats
+            <button className="btn-ghost" onClick={handleChangeSeats} disabled={working}>
+              {working ? 'Cancelling…' : 'Change seats'}
             </button>
           </>
         )}

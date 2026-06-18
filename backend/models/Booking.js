@@ -30,12 +30,11 @@ const bookingSchema = new mongoose.Schema(
 );
 
 // Generate a short booking reference before saving
-bookingSchema.pre('save', function (next) {
+bookingSchema.pre('save', async function () {
   if (!this.bookingReference) {
     this.bookingReference =
       'SMS-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();
   }
-  next();
 });
 
 module.exports = mongoose.model('Booking', bookingSchema);
