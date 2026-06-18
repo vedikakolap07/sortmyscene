@@ -2,8 +2,8 @@ import React from 'react';
 import { Clock, AlertTriangle } from 'lucide-react';
 import { useCountdown } from '../hooks/useCountdown';
 
-export default function CountdownTimer({ expiresAt, onExpired }) {
-  const { display, timeLeft, expired } = useCountdown(expiresAt);
+export default function CountdownTimer({ expiresAt, initialTimeRemaining, onExpired }) {
+  const { display, timeLeft, expired } = useCountdown(expiresAt, initialTimeRemaining);
 
   React.useEffect(() => {
     if (expired && onExpired) onExpired();

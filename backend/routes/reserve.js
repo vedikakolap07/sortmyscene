@@ -62,7 +62,15 @@ router.post('/', protect, async (req, res) => {
       );
     });
 
-    res.status(201).json({ success: true, data: reservation });
+    res.status(201).json({ 
+      success: true, 
+      data: {
+        ...reservation.toObject(),
+        expiresAt: reservation.expiresAt,
+        serverTime: new Date(),
+        timeRemaining: Math.floor((reservation.expiresAt - Date.now()) / 1000)
+      }
+    });
   } catch (err) {
     const status = err.statusCode || 500;
     res.status(status).json({

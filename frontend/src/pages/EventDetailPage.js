@@ -50,7 +50,14 @@ export default function EventDetailPage() {
     setWorking(true);
     try {
       const res = await reserveAPI.reserve({ eventId: id, seatNumbers: selectedSeats });
-      setReservation(res.data.data);
+      const reservationData = res.data.data;
+      
+      // Ensure we have the time remaining for accurate countdown
+      if (!reservationData.timeRemaining) {
+        reservationData.timeRemaining = Math.max(0, Math.floor((new Date(reservationData.expiresAt) - Date.now()) / 1000));
+      }
+      
+      setReservation(reservationData);
       // Optimistically update seat statuses
       setSeats((prev) =>
         prev.map((s) =>
@@ -157,7 +164,11 @@ export default function EventDetailPage() {
 
       {/* Countdown when reserved */}
       {step === STEPS.RESERVED && reservation && (
-        <CountdownTimer expiresAt={reservation.expiresAt} onExpired={handleReservationExpired} />
+        <CountdownTimer 
+          expiresAt={reservation.expiresAt} 
+          initialTimeRemaining={reservation.timeRemaining}
+          onExpired={handleReservationExpired} 
+        />
       )}
 
       <SeatGrid
