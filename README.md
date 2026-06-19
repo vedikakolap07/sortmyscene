@@ -67,35 +67,104 @@ sortmyscene/
 
 ## How to Run
 
-### 1. Backend
+### Prerequisites Setup
+
+1. **Install Node.js** (version 18 or higher)
+   - Download from [nodejs.org](https://nodejs.org/)
+
+2. **Set up MongoDB**
+   - **Option A:** Install MongoDB locally and run it
+     - Download from [mongodb.com](https://www.mongodb.com/try/download/community)
+     - Start the MongoDB service
+   - **Option B:** Use MongoDB Atlas (cloud)
+     - Create a free account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+     - Create a cluster and get your connection URI
+
+---
+
+### 1. Backend Setup & Run
 
 ```bash
+# Navigate to backend directory
 cd backend
 
-# Copy and configure environment
-cp .env.example .env
-# Edit .env — set MONGODB_URI and JWT_SECRET
-
+# Install dependencies
 npm install
-npm run seed      # Populate DB with 4 sample events + 80 seats each
-npm start         # Runs on http://localhost:5000
-# or: npm run dev  (requires nodemon: npm i -g nodemon)
+
+# Create and configure environment file
+# On Windows (PowerShell):
+copy .env.example .env
+# On Linux/Mac:
+cp .env.example .env
+
+# Edit .env file with your configuration:
+# - MONGODB_URI: Your MongoDB connection string
+#   Local: mongodb://localhost:27017/sortmyscene
+#   Atlas: mongodb+srv://username:password@cluster.mongodb.net/sortmyscene
+# - JWT_SECRET: A secure random string (e.g., "your-secret-key-here")
+# - PORT: 5000 (default)
 ```
 
-### 2. Frontend
+**Start Backend:**
+```bash
+# Seed database with sample events
+npm run seed
+
+# Start the server
+npm start         # Runs on http://localhost:5000
+
+# Alternative: Run with auto-reload (requires nodemon)
+npm install -g nodemon
+npm run dev
+```
+
+---
+
+### 2. Frontend Setup & Run
 
 ```bash
+# Open a new terminal and navigate to frontend directory
 cd frontend
 
-# Copy and configure environment
-cp .env.example .env
-# REACT_APP_API_URL=http://localhost:5000/api  (default)
-
+# Install dependencies
 npm install
+
+# Create and configure environment file
+# On Windows (PowerShell):
+copy .env.example .env
+# On Linux/Mac:
+cp .env.example .env
+
+# Edit .env file (optional, defaults work if backend runs on localhost:5000):
+# REACT_APP_API_URL=http://localhost:5000/api
+```
+
+**Start Frontend:**
+```bash
 npm start         # Runs on http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+---
+
+### Access the Application
+
+1. Open your browser and navigate to **[http://localhost:3000](http://localhost:3000)**
+2. Register a new account or log in
+3. Browse events and book tickets
+
+---
+
+### Project Running Checklist
+
+- [ ] MongoDB is running (local or Atlas connection configured)
+- [ ] Backend: `npm install` completed in `/backend`
+- [ ] Backend: `.env` file configured with MONGODB_URI and JWT_SECRET
+- [ ] Backend: `npm run seed` executed to populate sample data
+- [ ] Backend: `npm start` running on http://localhost:5000
+- [ ] Frontend: `npm install` completed in `/frontend`
+- [ ] Frontend: (optional) `.env` file configured in `/frontend`
+- [ ] Frontend: `npm start` running on http://localhost:3000
+- [ ] Browser: Application loads and responds at http://localhost:3000
 
 ---
 
